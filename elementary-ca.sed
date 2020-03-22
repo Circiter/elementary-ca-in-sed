@@ -35,14 +35,14 @@ s/[^01]/0/g
 
         # Rule 110. (N.B., 110_{10}=01101110_2.)
         # Turing complete elementary cellular automaton.
-        #s/$/\n000=0;001=1;010=1;011=1;100=0;101=1;110=1;111=0/
+        s/$/\n000=0;001=1;010=1;011=1;100=0;101=1;110=1;111=0/
 
         # Uncomment one of the following lines to enjoy other automatons
         # (or write your own lookup table for any other rule.)
 
         # Rule 90 (can generate the Sierpinski triangle when
         # the initial state has a single non-zero cell).
-        s/$/\n000=0;001=1;010=0;011=1;100=1;101=0;110=1;111=0/
+        #s/$/\n000=0;001=1;010=0;011=1;100=1;101=0;110=1;111=0/
 
         # Rule 30 (useful as a [pseudo]random number generator)
         #s/$/\n000=0;001=1;010=1;011=1;100=1;101=0;110=0;111=0/
