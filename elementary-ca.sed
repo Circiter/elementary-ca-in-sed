@@ -1,6 +1,6 @@
 #!/bin/sed -Enf
 
-# Written by Circiter (mailto:xcirciter@gmail.com)
+# (c) Written by Circiter (mailto:xcirciter@gmail.com)
 # (Accessible as http://github.com/Circiter/elementary-ca-in-sed).
 # Usage: echo <seed> | ./elementary-ca.sed
 #        or echo auto | ./elementary-ca.sed.
@@ -8,7 +8,7 @@
 
 # Rule 110 automaton
 
-# Following block can be changes to something like
+# Following block can be changed to something like
 # /auto/s/^.*$/0000000000100000000000/.
 /auto/{
     s/^.*$/0/; x
@@ -26,14 +26,21 @@ s/[^01]/0/g
 s/^/>00/; s/$/00\n/ # Treat the boundaries specially.
 
 # Lookup table in the format {<bit_number>=<bit>;}*, where each
-# bit is taken from the binary expansion of the rule number (in
-# this case 110_{10}=01101110_2):
+# bit is taken from the binary expansion of the rule number.
+
+# Rule 110. (N.B., 110_{10}=01101110_2.)
+# Turing complete elementary cellular automaton.
 s/$/000=0;001=1;010=1;011=1;100=0;101=1;110=1;111=0/
 
 # Uncomment one of the following lines to enjoy other automatons
 # (or write your own lookup table for any other rule.)
-#s/$/000=0;001=1;010=0;011=1;100=1;101=0;110=1;111=0/ # Rule 90.
-#s/$/000=0;001=1;010=1;011=1;100=1;101=0;110=0;111=0/ # Rule 30.
+
+# Rule 90 (can generate the Sierpinski triangle when
+# the initial state has a single non-zero cell).
+#s/$/000=0;001=1;010=0;011=1;100=1;101=0;110=1;111=0/
+
+# Rule 30 (useful as a [pseudo]random number generator)
+#s/$/000=0;001=1;010=1;011=1;100=1;101=0;110=0;111=0/
 
 # Pattern space: >seed\nlookup_table.
 
@@ -60,8 +67,8 @@ s/$/000=0;001=1;010=1;011=1;100=0;101=1;110=1;111=0/
     # We stopped having two extra zeros after > and although there
     # is nevertheless some padding needed on the boundaries,
     # we remove one of them due to the fact that we have a
-    # slightly shifted sequency, so it'll be better for compensate it
-    # by extra zero but at the beginning.
+    # slightly shifted sequency, so it'll be better to compensate it
+    # by extra zero at the beginning.
     s/>.//; s/^/>0/ # Reinitialize the pointer marker.
 
     # Pretty printing.
