@@ -23,57 +23,48 @@
 }
 
 s/[^01]/0/g
-s/^/>00/; s/$/00\n/ # Treat the boundaries specially.
 
-# Lookup table in the format {<bit_number>=<bit>;}*, where each
-# bit is taken from the binary expansion of the rule number.
+# Pattern space: >seed.
 
-# Rule 110. (N.B., 110_{10}=01101110_2.)
-# Turing complete elementary cellular automaton.
-s/$/000=0;001=1;010=1;011=1;100=0;101=1;110=1;111=0/
+:next_generation
+    s/^(.)(.*)(.)$/>\3\1\2\3\1/ # Boundary conditions (wrap-around).
 
-# Uncomment one of the following lines to enjoy other automatons
-# (or write your own lookup table for any other rule.)
+    :update
+        # Lookup table in the format {<bit_number>=<bit>;}*, where each
+        # bit is taken from the binary expansion of the rule number.
 
-# Rule 90 (can generate the Sierpinski triangle when
-# the initial state has a single non-zero cell).
-#s/$/000=0;001=1;010=0;011=1;100=1;101=0;110=1;111=0/
+        # Rule 110. (N.B., 110_{10}=01101110_2.)
+        # Turing complete elementary cellular automaton.
+        #s/$/\n000=0;001=1;010=1;011=1;100=0;101=1;110=1;111=0/
 
-# Rule 30 (useful as a [pseudo]random number generator)
-#s/$/000=0;001=1;010=1;011=1;100=1;101=0;110=0;111=0/
+        # Uncomment one of the following lines to enjoy other automatons
+        # (or write your own lookup table for any other rule.)
 
-# Pattern space: >seed\nlookup_table.
+        # Rule 90 (can generate the Sierpinski triangle when
+        # the initial state has a single non-zero cell).
+        s/$/\n000=0;001=1;010=0;011=1;100=1;101=0;110=1;111=0/
 
-:generate
-    h # Make backup [of the lookup table].
-    # Both spaces: growing_generation>old_generation\nlookup_table.
-    # Get next bit from the lookup-table and append this bit
-    # to the generation being built.
-    s/^([^>]*)>(...)([^\n]*)\n.*\2=(.).*$/\1\4>\2\3/
+        # Rule 30 (useful as a [pseudo]random number generator)
+        #s/$/\n000=0;001=1;010=1;011=1;100=1;101=0;110=0;111=0/
 
-    s/>./>/ # Move the pointer (truncating the old generation).
-    # Pattern space: growing_generation_updated>old_generation_truncated.
+        # Patter space: growing_generation>old_generation\nlookup_table.
+        # Get next bit from the lookup-table and append this bit
+        # to the generation being built.
+        s/^([^>]*)>(...)([^\n]*\n).*\2=(.)/\1\4>\2\3/
+        s/\n.*$//
 
-    x
-    # Leave only the lookup table.
-    s/^[^\n]*\n//
-    x
-    G # Restore the lookup table from the backup.
+        s/>./>/ # Move the pointer (truncating the old generation).
+        # Pattern space: growing_generation_updated>old_generation_truncated.
 
-    />..\n/!bgenerate # Move the pointer as far as we can.
+        />$/! bupdate # Move the pointer as far as we can.
 
-    # OK, new generation built successfully.
+        # OK, new generation built successfully.
 
-    # We stopped having two extra zeros after > and although there
-    # is nevertheless some padding needed on the boundaries,
-    # we remove one of them due to the fact that we have a
-    # slightly shifted sequency, so it'll be better to compensate it
-    # by extra zero at the beginning.
-    s/>.//; s/^/>0/ # Reinitialize the pointer marker.
+        s/>//
 
-    # Pretty printing.
-    h; x; s/>([^\n]*)\n.*$/\1/; y/10/X /; p; x
+        # Pretty printing.
+        h; x; y/10/X /; p; x
 
-    # Keep generating until we fill the bottom line completely.
-    /^>01/!bgenerate
+        # Keep generating until we fill the bottom line completely.
+        /^1/! bnext_generation
 
