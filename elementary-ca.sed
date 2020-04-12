@@ -24,7 +24,7 @@
 
 s/[^01]/0/g
 
-# Pattern space: >seed.
+# Pattern space: seed.
 
 :next_generation
     s/^(.)(.*)(.)$/>\3\1\2\3\1/ # Boundary conditions (wrap-around).
@@ -47,7 +47,7 @@ s/[^01]/0/g
         # Rule 30 (useful as a [pseudo]random number generator)
         #s/$/\n000=0;001=1;010=1;011=1;100=1;101=0;110=0;111=0/
 
-        # Patter space: growing_generation>old_generation\nlookup_table.
+        # Pattern space: growing_generation>old_generation\nlookup_table.
         # Get next bit from the lookup-table and append this bit
         # to the generation being built.
         s/^([^>]*)>(...)([^\n]*\n).*\2=(.)/\1\4>\2\3/
@@ -66,5 +66,6 @@ s/[^01]/0/g
         h; x; y/10/X /; p; x
 
         # Keep generating until we fill the bottom line completely.
-        /^1/! bnext_generation
+        #/^1/! bnext_generation
+        bnext_generation
 
