@@ -6,7 +6,7 @@
 #        or echo auto | ./elementary-ca.sed.
 # License: MIT.
 
-# Rule 110 automaton
+# Rule 110 automaton.
 
 # Following block can be changed to something like
 # /auto/s/^.*$/0000000000100000000000/.
@@ -66,6 +66,6 @@ s/[^01]/0/g
         h; x; y/10/X /; p; x
 
         # Keep generating until we fill the bottom line completely.
-        #/^1/! bnext_generation
-        bnext_generation
+        /^1/! bnext_generation
+        #bnext_generation # But it is possible to work forever.
 
